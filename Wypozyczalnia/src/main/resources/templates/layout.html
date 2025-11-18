@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Wypożyczalnia Samochodów</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a th:href="@{/}">Strona główna</a></li>
+            <li><a th:href="@{/klienci}">Klienci</a></li>
+            <li><a th:href="@{/samochody}">Samochody</a></li>
+            <li><a th:href="@{/wypozyczalnia}">Wypożyczalnia</a></li>
+            <li><a th:href="@{/pracownicy}">Pracownicy</a></li>
+            <li><a th:href="@{/role}">Role</a></li>
+            <li><a th:href="@{/lokale}">Lokale</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <div th:replace="~{::body}"></div>
+</main>
+
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout">
+<body>
+<div>
+    <h2>Lista Klientów</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>PESEL</th>
+            <th>Data utworzenia</th>
+            <th>Data zmiany</th>
+            <th>Utworzone przez</th>
+            <th>Zmienione przez</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="klient : ${page.content}">
+            <td th:text="${klient.id}"></td>
+            <td th:text="${klient.imię}"></td>
+            <td th:text="${klient.nazwisko}"></td>
+            <td th:text="${klient.pesel}"></td>
+            <td th:text="${#temporals.format(klient.dataUtworzenia, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${#temporals.format(klient.dataZmiany, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${klient.utworzonePrzez}"></td>
+            <td th:text="${klient.zmienionePrzez}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <a th:if="${currentPage > 0}" th:href="@{/klienci(page=${currentPage - 1})}">« Poprzednia</a>
+        <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
+        <a th:if="${currentPage + 1 < totalPages}" th:href="@{/klienci(page=${currentPage + 1})}">Następna »</a>
+    </div>
+</div>
+</body>
+</html>

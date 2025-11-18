@@ -8,6 +8,11 @@
       </list>
     </option>
   </component>
+  <component name="ProjectResources">
+    <resource url="http://primefaces.org/ui" location="$PROJECT_DIR$" />
+    <resource url="http://xmlns.jcp.org/jsf/core  " location="$PROJECT_DIR$" />
+    <resource url="http://xmlns.jcp.org/jsf/html" location="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_25" project-jdk-name="openjdk-25" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
