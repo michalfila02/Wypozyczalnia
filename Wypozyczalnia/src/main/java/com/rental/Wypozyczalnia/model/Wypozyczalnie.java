@@ -28,7 +28,7 @@ public class Wypozyczalnie {
     private Set<Role> roles = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "wypozyczalnieNazwa")
-    private Set<Samochody> samochodies = new LinkedHashSet<>();
+    private Set<Samochody> samochody = new LinkedHashSet<>();
 
     public String getNazwa() {
         return nazwa;
@@ -78,12 +78,12 @@ public class Wypozyczalnie {
         this.roles = roles;
     }
 
-    public Set<Samochody> getSamochodies() {
-        return samochodies;
+    public Set<Samochody> getSamochody() {
+        return samochody;
     }
 
-    public void setSamochodies(Set<Samochody> samochodies) {
-        this.samochodies = samochodies;
+    public void setSamochody(Set<Samochody> samochody) {
+        this.samochody = samochody;
     }
 
 }
