@@ -10,6 +10,7 @@ import java.util.Set;
 @Table(name = "klienci", schema = "mydb")
 public class Klienci {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id_klienta", nullable = false)
     private Integer id;
 

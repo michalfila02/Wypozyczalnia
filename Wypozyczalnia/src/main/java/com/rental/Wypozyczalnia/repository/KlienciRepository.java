@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,5 +17,5 @@ public interface KlienciRepository extends JpaRepository<Klienci, Integer> {
            OR k.nazwisko LIKE LOWER(CONCAT('%', :search, '%'))
            OR CAST(k.pesel AS string) LIKE CONCAT('%', :search, '%')
     """)
-    Page<Klienci> search(String search, Pageable pageable);
+    Page<Klienci> search(@Param("search") String search, Pageable pageable);
 }
