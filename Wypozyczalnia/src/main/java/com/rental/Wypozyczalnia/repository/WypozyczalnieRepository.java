@@ -18,4 +18,6 @@ public interface WypozyczalnieRepository extends JpaRepository<Wypozyczalnie, St
            OR w.telefonKontaktowy LIKE CONCAT('%', :search, '%')
     """)
     Page<Wypozyczalnie> search(String search, Pageable pageable);
+
+    String nazwa(String nazwa);
 }

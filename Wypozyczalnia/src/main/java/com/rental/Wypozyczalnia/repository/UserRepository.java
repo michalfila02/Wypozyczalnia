@@ -12,12 +12,10 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    // Search across fields actually in the model
     @Query("""
         SELECT u FROM User u
         WHERE u.email LIKE CONCAT('%', :search, '%')
-           OR u.password LIKE CONCAT('%', :search, '%')
-           OR CAST(u.roleRole AS string) LIKE CONCAT('%', :search, '%')
+           OR u.roleRole.role LIKE CONCAT('%', :search, '%')
     """)
     Page<User> search(String search, Pageable pageable);
 

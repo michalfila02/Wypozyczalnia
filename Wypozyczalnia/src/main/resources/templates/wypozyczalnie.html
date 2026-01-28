@@ -6,6 +6,25 @@
 
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #popupFormOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1050;
+            justify-content: center;
+            align-items: center;
+        }
+        #popupFormOverlay .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 0.5rem;
+            max-width: 600px;
+            width: 90%;
+        }
+    </style>
 </head>
 <body>
 
@@ -13,12 +32,9 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="#">Menu</a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -53,11 +69,7 @@
     <div class="row mb-4">
         <div class="col-md-3">
             <form method="get" class="input-group" th:action="@{/wypozyczalnie}">
-                <input type="text"
-                       name="search"
-                       th:value="${search}"
-                       placeholder="Search..."
-                       class="form-control md-2">
+                <input type="text" name="search" th:value="${search}" placeholder="Search..." class="form-control md-2">
                 <button type="submit" class="btn btn-primary">🔎</button>
             </form>
         </div>
@@ -80,17 +92,14 @@
         </thead>
         <tbody>
         <tr th:each="wype : ${wypozyczalnie.content}">
-            <td th:text="${wype.nazwa}"></td>
-            <td th:text="${wype.miasto}"></td>
-            <td th:text="${wype.ulica}"></td>
-            <td th:text="${wype.nrUlicy}"></td>
-            <td th:text="${wype.telefonKontaktowy}"></td>
+            <td th:text="${wype.nazwa != null ? wype.nazwa : ''}"></td>
+            <td th:text="${wype.miasto != null ? wype.miasto : ''}"></td>
+            <td th:text="${wype.ulica != null ? wype.ulica : ''}"></td>
+            <td th:text="${wype.nrUlicy != null ? wype.nrUlicy : ''}"></td>
+            <td th:text="${wype.telefonKontaktowy != null ? wype.telefonKontaktowy : ''}"></td>
             <td>
-                <a th:href="@{/wypozyczalnie/edit/{nazwa}(id=${wype.nazwa})}"
-                   class="btn btn-sm btn-primary">Edit</a>
-
-                <a th:href="@{/wypozyczalnie/delete/{nazwa}(nazwa=${wype.nazwa})}"
-                   class="btn btn-sm btn-danger">Delete</a>
+                <a th:href="@{/wypozyczalnie/edit/{nazwa}(id=${wype.nazwa})}" class="btn btn-sm btn-primary">Edit</a>
+                <a th:href="@{/wypozyczalnie/delete/{nazwa}(nazwa=${wype.nazwa})}" class="btn btn-sm btn-danger">Delete</a>
             </td>
         </tr>
         </tbody>
@@ -99,32 +108,43 @@
     <!-- PAGINATION -->
     <nav th:if="${wypozyczalnie.totalPages > 1}">
         <ul class="pagination">
-            <li class="page-item"
-                th:classappend="${wypozyczalnie.first} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/wypozyczalnie(page=${wypozyczalnie.number - 1}, search=${search})}">
+            <li class="page-item" th:classappend="${wypozyczalnie.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/wypozyczalnie(page=${wypozyczalnie.number - 1}, search=${search})}">
                     Previous
                 </a>
             </li>
-
             <li class="page-item disabled">
-                <span class="page-link"
-                      th:text="${wypozyczalnie.number + 1} + ' / ' + ${wypozyczalnie.totalPages}">
+                <span class="page-link" th:text="${wypozyczalnie.number + 1} + ' / ' + ${wypozyczalnie.totalPages}">
                 </span>
             </li>
-
-            <li class="page-item"
-                th:classappend="${wypozyczalnie.last} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/wypozyczalnie(page=${wypozyczalnie.number + 1}, search=${search})}">
+            <li class="page-item" th:classappend="${wypozyczalnie.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/wypozyczalnie(page=${wypozyczalnie.number + 1}, search=${search})}">
                     Next
                 </a>
             </li>
         </ul>
     </nav>
+
 </div>
 
-<!-- Bootstrap JS -->
+<div id="popupFormOverlay" th:classappend="${showForm} ? ' d-flex'">
+    <div th:replace="~{fragments/entity-form :: entityForm(
+        '/wypozyczalnie',
+        ${formEntity},
+        ${formEntity.nazwa == null ? 'Create Wypożyczalnia' : 'Edit Wypożyczalnia'},
+        ${formFields},
+        ${formValues},
+        ${showForm},
+        'nazwa'
+    )}"></div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function closeForm() {
+        document.getElementById('popupFormOverlay').classList.remove('d-flex');
+    }
+</script>
+
 </body>
 </html>
