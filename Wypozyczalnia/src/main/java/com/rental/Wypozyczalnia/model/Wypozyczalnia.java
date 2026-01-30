@@ -1,6 +1,7 @@
 package com.rental.Wypozyczalnia.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 })
 public class Wypozyczalnia {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Nr_wypozyczenia", nullable = false)
     private Integer id;
 
@@ -21,7 +23,7 @@ public class Wypozyczalnia {
     @JoinColumn(name = "Id_klienta", nullable = false)
     private Klienci idKlienta;
 
-    @Column(name = "`Data_wypożyczenia`", nullable = false)
+    @Column(name = "`Data_wypożyczenia`")
     private LocalDate dataWypożyczenia;
 
     @Column(name = "Data_oddania")

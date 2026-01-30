@@ -1,8 +1,11 @@
 package com.rental.Wypozyczalnia.model;
 
+import com.rental.Wypozyczalnia.security.CustomUserDetails;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Instant;
 
@@ -36,17 +39,42 @@ public class User {
     @Column(name = "remember_token", length = 100)
     private String rememberToken;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @Column(name = "stworzone_przez", length = 45)
+    @Column(name = "stworzone_przez", length = 45, updatable = false)
     private String stworzonePrzez;
 
     @Column(name = "zmienione_przez", length = 45)
     private String zmienionePrzez;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = Instant.now();
+        this.stworzonePrzez = getCurrentUser();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = Instant.now();
+        this.zmienionePrzez = getCurrentUser();
+    }
+
+    private String getCurrentUser() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getPrincipal() instanceof CustomUserDetails) {
+                CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+                return userDetails.getUser().getName(); // Use name instead of email
+            }
+            return auth != null ? auth.getName() : "SYSTEM";
+        } catch (Exception e) {
+            return "SYSTEM";
+        }
+    }
 
     public Integer getId() {
         return id;

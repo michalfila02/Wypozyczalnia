@@ -1,5 +1,6 @@
 package com.rental.Wypozyczalnia.model;
 
+import com.rental.Wypozyczalnia.security.CustomUserDetails;
 import jakarta.persistence.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,8 +27,6 @@ public class Klienci {
     @Column(name = "PESEL", nullable = false)
     private Integer pesel;
 
-    // ===== AUDIT FIELDS =====
-
     @Column(name = "Data_utworzenia", updatable = false)
     private Instant dataUtworzenia;
 
@@ -42,8 +41,6 @@ public class Klienci {
 
     @OneToMany(mappedBy = "idKlienta")
     private Set<Wypozyczalnia> wypozyczalnias = new LinkedHashSet<>();
-
-    // ===== JPA LIFECYCLE =====
 
     @PrePersist
     protected void onCreate() {
@@ -60,13 +57,15 @@ public class Klienci {
     private String getCurrentUser() {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getPrincipal() instanceof CustomUserDetails) {
+                CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+                return userDetails.getUser().getName();
+            }
             return auth != null ? auth.getName() : "SYSTEM";
         } catch (Exception e) {
             return "SYSTEM";
         }
     }
-
-    // ===== GETTERS / SETTERS =====
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -85,6 +84,14 @@ public class Klienci {
 
     public String getUtworzonePrzez() { return utworzonePrzez; }
     public String getZmienionePrzez() { return zmienionePrzez; }
+
+    public void setDataUtworzenia(Instant dataUtworzenia) {
+        this.dataUtworzenia = dataUtworzenia;
+    }
+
+    public void setUtworzonePrzez(String utworzonePrzez) {
+        this.utworzonePrzez = utworzonePrzez;
+    }
 
     public Set<Wypozyczalnia> getWypozyczalnias() { return wypozyczalnias; }
     public void setWypozyczalnias(Set<Wypozyczalnia> wypozyczalnias) {

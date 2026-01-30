@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Klienci</title>
+    <title th:text="#{klienci.title}">Klienci</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         #popupFormOverlay {
@@ -22,25 +22,56 @@
             max-width: 600px;
             width: 90%;
         }
+        #loadingSpinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="#">Menu</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
+        <a class="navbar-brand" href="#" th:text="#{nav.menu}">Menu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" th:href="@{/klienci}">Klienci</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/wypozyczalnia}">Wypożyczalnia</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/samochody}">Samochody</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/role}">Role</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/user}">Pracownicy</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/wypozyczalnie}">Wypożyczalnie</a></li>
+                <th:block th:if="${!#authorization.expression('hasRole(''Dzial_HR'')')}">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/klienci}" th:text="#{nav.klienci}">Klienci</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/wypozyczalnia}" th:text="#{nav.wypozyczalnia}">Wypożyczalnia</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/samochody}" th:text="#{nav.samochody}">Samochody</a></li>
+                </th:block>
+
+                <th:block th:if="${#authorization.expression('hasAnyRole(''Dzial_HR'', ''test'')')}">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/role}" th:text="#{nav.role}">Role</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/user}" th:text="#{nav.pracownicy}">Pracownicy</a></li>
+                </th:block>
+
+                <li class="nav-item" th:if="${#authorization.expression('hasAnyRole(''Zarzad'', ''test'')')}">
+                    <a class="nav-link" th:href="@{/wypozyczalnie}" th:text="#{nav.wypozyczalnie}">Wypożyczalnie</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown me-3">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        🌐
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" th:href="@{''(lang='pl')}">Polski</a></li>
+                        <li><a class="dropdown-item" th:href="@{''(lang='en')}">English</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-outline-danger btn-sm nav-link px-3">
+                            <span th:text="#{nav.logout}">Wyloguj</span> ([[${#authentication.name}]])
+                        </button>
+                    </form>
+                </li>
             </ul>
         </div>
     </div>
@@ -48,89 +79,163 @@
 
 <div class="container mt-4">
 
-    <h2>Klienci</h2>
+    <h2 th:text="#{klienci.title}">Klienci</h2>
 
     <div class="row mb-4">
         <div class="col-md-3">
-            <form method="get" class="input-group" th:action="@{/klienci}">
-                <input type="text" name="search" th:value="${search}" placeholder="Search..." class="form-control me-2">
+            <form method="get" class="input-group" th:action="@{/klienci}" id="searchForm">
+                <input type="text" name="search" th:value="${search}" th:placeholder="#{klienci.search.placeholder}" class="form-control" id="searchInput">
                 <button type="submit" class="btn btn-primary">🔎</button>
             </form>
         </div>
     </div>
 
-    <button class="btn btn-primary mb-3" id="createBtn">Create</button>
+    <button class="btn btn-primary mb-3" id="createBtn" th:text="#{klienci.button.create}">Create</button>
 
-    <table class="table table-bordered table-striped" th:if="${klienci.totalElements > 0}">
+    <table class="table table-bordered table-striped">
         <thead class="table-dark">
         <tr>
-            <th>ID</th>
-            <th>Imię</th>
-            <th>Nazwisko</th>
-            <th>PESEL</th>
-            <th>Data utworzenia</th>
-            <th>Data zmiany</th>
-            <th>Utworzone przez</th>
-            <th>Zmienione przez</th>
-            <th>Akcje</th>
+            <th th:text="#{table.id}">ID</th>
+            <th th:text="#{table.imie}">Imię</th>
+            <th th:text="#{table.nazwisko}">Nazwisko</th>
+            <th th:text="#{table.pesel}">PESEL</th>
+            <th th:text="#{table.dataUtworzenia}">Data utworzenia</th>
+            <th th:text="#{table.dataZmiany}">Data zmiany</th>
+            <th th:text="#{table.utworzonePrzez}">Utworzone przez</th>
+            <th th:text="#{table.zmienionePrzez}">Zmienione przez</th>
+            <th th:text="#{table.akcje}">Akcje</th>
         </tr>
         </thead>
-        <tbody>
-        <tr th:each="kll : ${klienci.content}">
-            <td th:text="${kll.id} "></td>
-                <td th:text="${kll.imię != null ? kll.imię : ''}"></td>
-            <td th:text="${kll.nazwisko != null ? kll.nazwisko : ''}"></td>
-            <td th:text="${kll.pesel != null ? kll.pesel : ''}"></td>
-            <td th:text="${kll.dataUtworzenia != null ? kll.dataUtworzenia : ''}"></td>
-            <td th:text="${kll.dataZmiany != null ? kll.dataZmiany : ''}"></td>
-            <td th:text="${kll.utworzonePrzez != null ? kll.utworzonePrzez : ''}"></td>
-            <td th:text="${kll.zmienionePrzez != null ? kll.zmienionePrzez : ''}"></td>
-            <td>
-                <button class="btn btn-sm btn-primary editBtn" th:data-id="${kll.id}">Edit</button>
-                <a th:href="@{/klienci/delete/{id}(id=${kll.id})}" class="btn btn-sm btn-danger">Delete</a>
-            </td>
-        </tr>
+        <tbody id="klienciTableBody">
         </tbody>
     </table>
 
-    <nav th:if="${klienci.totalPages > 1}">
-        <ul class="pagination">
-            <li class="page-item" th:classappend="${klienci.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/klienci(page=${klienci.number - 1}, search=${search})}">Previous</a>
-            </li>
-            <li class="page-item disabled">
-                <span class="page-link" th:text="${klienci.number + 1} + ' / ' + ${klienci.totalPages}"></span>
-            </li>
-            <li class="page-item" th:classappend="${klienci.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/klienci(page=${klienci.number + 1}, search=${search})}">Next</a>
-            </li>
-        </ul>
-    </nav>
+    <div id="loadingSpinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden" th:text="#{loading.text}">Loading...</span>
+        </div>
+    </div>
 </div>
 
-<!-- POPUP FORM OVERLAY -->
 <div id="popupFormOverlay" th:classappend="${showForm} ? 'd-flex'">
-    <div th:replace="~{fragments/entity-form :: entityForm('/klienci', formEntity, ${formEntity.id == null ? 'Create Klienci' : 'Edit Klienci'})}"></div>
+    <div th:replace="~{fragments/entity-form :: entityForm(
+        '/klienci',
+        ${formEntity},
+        ${formEntity.id == null ? #messages.msg('form.create.title') : #messages.msg('form.edit.title')},
+        ${formFields},
+        ${formValues},
+        ${foreignKeyOptions},
+        ${showForm},
+        'id'
+    )}"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+<script th:inline="javascript">
     const overlay = document.getElementById('popupFormOverlay');
     const createBtn = document.getElementById('createBtn');
-    const editButtons = document.querySelectorAll('.editBtn');
+    const tableBody = document.getElementById('klienciTableBody');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const searchInput = document.getElementById('searchInput');
+
+    const i18n = {
+        edit: /*[[#{klienci.button.edit}]]*/ 'Edit',
+        delete: /*[[#{klienci.button.delete}]]*/ 'Delete'
+    };
+
+    let currentPage = 0;
+    let isLoading = false;
+    let hasMoreData = true;
+    let currentSearch = null;
+    if (currentSearch === null) currentSearch = '';
 
     createBtn.addEventListener('click', () => overlay.style.display = 'flex');
 
-    editButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            window.location.href = '/klienci?editId=' + id;
-        });
-    });
-
     function closeForm() {
         overlay.style.display = 'none';
+        window.location.href = '/klienci';
     }
+
+    function renderRow(klient) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${klient.id ?? ''}</td>
+            <td>${klient.imię ?? ''}</td>
+            <td>${klient.nazwisko ?? ''}</td>
+            <td>${klient.pesel ?? ''}</td>
+            <td>${klient.dataUtworzenia ?? ''}</td>
+            <td>${klient.dataZmiany ?? ''}</td>
+            <td>${klient.utworzonePrzez ?? ''}</td>
+            <td>${klient.zmienionePrzez ?? ''}</td>
+            <td>
+                <button class="btn btn-sm btn-primary editBtn" data-id="${klient.id}">
+                    ${i18n.edit}
+                </button>
+                <a href="/klienci/delete/${klient.id}" class="btn btn-sm btn-danger">
+                    ${i18n.delete}
+                </a>
+            </td>
+        `;
+        tableBody.appendChild(row);
+
+        row.querySelector('.editBtn').addEventListener('click', () => {
+            window.location.href = '/klienci?editId=' + klient.id;
+        });
+    }
+
+    async function loadMoreData() {
+        if (isLoading || !hasMoreData) return;
+
+        isLoading = true;
+        loadingSpinner.style.display = 'block';
+
+        try {
+            const url = new URL('/klienci/api/data', window.location.origin);
+            url.searchParams.set('page', currentPage);
+            url.searchParams.set('size', '1');
+            if (currentSearch) url.searchParams.set('search', currentSearch);
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (!data.content || data.content.length === 0) {
+                hasMoreData = false;
+                return;
+            }
+
+            data.content.forEach(renderRow);
+            currentPage++;
+
+        } catch (e) {
+            console.error('LOAD ERROR', e);
+            hasMoreData = false;
+        } finally {
+            isLoading = false;
+            loadingSpinner.style.display = 'none';
+        }
+    }
+
+    window.addEventListener('scroll', () => {
+        if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 100) {
+            loadMoreData();
+        }
+    });
+
+    searchInput.addEventListener('input', () => {
+        currentSearch = searchInput.value;
+        currentPage = 0;
+        hasMoreData = true;
+        tableBody.innerHTML = '';
+        loadMoreData();
+    });
+
+    (async function preloadUntilScrollable() {
+        while (hasMoreData && document.body.scrollHeight <= window.innerHeight) {
+            await loadMoreData();
+        }
+    })();
+
+    loadMoreData();
 </script>
 
 </body>
