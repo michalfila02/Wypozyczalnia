@@ -67,7 +67,6 @@
 
     <h2>Pracownicy</h2>
 
-    <!-- SEARCH -->
     <div class="row mb-4">
         <div class="col-md-3">
             <form method="get" class="input-group" th:action="@{/user}">
@@ -126,7 +125,6 @@
     </nav>
 </div>
 
-<!-- POPUP FORM OVERLAY -->
 <div id="popupFormOverlay" th:classappend="${showForm} ? 'd-flex'">
     <div th:replace="~{fragments/entity-form :: entityForm(
         '/user',

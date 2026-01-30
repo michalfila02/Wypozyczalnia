@@ -11,20 +11,17 @@
 
         <form th:action="${actionUrl}" method="post" th:object="${formEntity}">
 
-            <!-- Hidden ID field (works for any ID type) -->
             <input type="hidden"
                    th:if="${formEntity != null && formEntity[idFieldName] != null}"
                    th:name="${idFieldName}"
                    th:value="${formEntity[idFieldName]}" />
 
-            <!-- Dynamic fields -->
             <div th:each="fieldEntry : ${formFields}" class="mb-3">
                 <label th:for="${fieldEntry.key}"
                        class="form-label"
                        th:text="${#strings.capitalize(fieldEntry.key)}">
                 </label>
 
-                <!-- Check if this field has foreign key options (dropdown) -->
                 <div th:if="${foreignKeyOptions != null && foreignKeyOptions.containsKey(fieldEntry.key)}">
                     <select th:name="${fieldEntry.key}"
                             th:id="${fieldEntry.key}"
@@ -39,9 +36,7 @@
                     </select>
                 </div>
 
-                <!-- Regular input fields -->
                 <div th:unless="${foreignKeyOptions != null && foreignKeyOptions.containsKey(fieldEntry.key)}">
-                    <!-- Checkbox -->
                     <div th:if="${fieldEntry.value == 'checkbox'}" class="form-check">
                         <input type="checkbox"
                                th:name="${fieldEntry.key}"
@@ -50,7 +45,6 @@
                                class="form-check-input" />
                     </div>
 
-                    <!-- Textarea for long text -->
                     <textarea th:if="${fieldEntry.value == 'textarea'}"
                               th:name="${fieldEntry.key}"
                               th:id="${fieldEntry.key}"
@@ -59,7 +53,6 @@
                               th:text="${formValues.get(fieldEntry.key)}">
                     </textarea>
 
-                    <!-- Regular inputs -->
                     <input th:unless="${fieldEntry.value == 'checkbox' || fieldEntry.value == 'textarea'}"
                            th:type="${fieldEntry.value}"
                            th:name="${fieldEntry.key}"
@@ -68,7 +61,6 @@
                            class="form-control" />
                 </div>
 
-                <!-- Validation errors -->
                 <div th:if="${#fields.hasErrors(fieldEntry.key)}" class="text-danger small mt-1">
                     <span th:errors="*{__${fieldEntry.key}__}"></span>
                 </div>

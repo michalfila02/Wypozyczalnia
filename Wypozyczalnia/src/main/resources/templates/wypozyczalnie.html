@@ -63,12 +63,10 @@
     </div>
 </nav>
 
-<!-- CONTENT -->
 <div class="container mt-4">
 
     <h2>Wypożyczalnie</h2>
 
-    <!-- SEARCH -->
     <div class="row mb-4">
         <div class="col-md-3">
             <form method="get" class="input-group" th:action="@{/wypozyczalnie}">
@@ -78,10 +76,8 @@
         </div>
     </div>
 
-    <!-- CREATE BUTTON -->
     <button class="btn btn-primary mb-3" id="createBtn">Create</button>
 
-    <!-- TABLE -->
     <table class="table table-bordered table-striped" th:if="${wypozyczalnie.totalElements > 0}">
         <thead class="table-dark">
         <tr>
@@ -108,7 +104,6 @@
         </tbody>
     </table>
 
-    <!-- PAGINATION -->
     <nav th:if="${wypozyczalnie.totalPages > 1}">
         <ul class="pagination">
             <li class="page-item" th:classappend="${wypozyczalnie.first} ? 'disabled'">
@@ -124,7 +119,6 @@
     </nav>
 </div>
 
-<!-- POPUP FORM OVERLAY -->
 <div id="popupFormOverlay" th:classappend="${showForm} ? 'd-flex'">
     <div th:replace="~{fragments/entity-form :: entityForm(
         '/wypozyczalnie',
@@ -155,7 +149,7 @@
 
     function closeForm() {
         overlay.style.display = 'none';
-        window.location.href = '/wypozyczalnie'; // Clear editNazwa param
+        window.location.href = '/wypozyczalnie';
     }
 </script>
 
